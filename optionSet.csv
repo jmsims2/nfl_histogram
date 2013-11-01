@@ -1,0 +1,21 @@
+key,value
+Points Scored Per Game,o_points_per_game
+Points Given Up Per Game,d_pts_per_game
+Total Points Given Up,d_total_points
+Total Defensive Plays,d_total_plays
+Total Yards Given Up,d_yards_per_game
+Yards Given Up Per Play,d_yards_per_play
+First Downs Given Up Per Game,d_first_down_per_game
+Defense Third Down Percentage,d_third_down_pct
+Defense Fourth Down Percentage,d_fourth_down_pct
+Defensive Penalties,d_penalties
+Defensive Penalty Yards,d_penalty_yards
+Total Points Scored,o_total_points
+Total Offensive Plays,o_total_plays
+Yards Gained Per Game,o_yards_per_game
+Yards Gained Per Play,o_yards_per_play
+First Downs Made Per Game,o_first_down_per_game
+Offense Third Down Percentage,o_third_down_pct
+Offense Fourth Down Percentage,o_fourth_down_pct
+Offensive Penalties,o_penalties
+Offensive Penalty Yards,o_penalty_yards

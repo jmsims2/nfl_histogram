@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello, I am Jeff Sims</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="d3.min.js" type="text/javascript"></script>
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style>
+        .axis {
+            fill: none;
+            font-size: 13px;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+
+        circle:hover {
+            stroke-width: 5px;
+        }
+
+        svg {
+            border-color:black;
+            background-color: lightgray;
+        }
+
+        body {
+            padding-top: 60px;
+        }
+
+        .control-label {
+            font-size: 18px;
+            font-weight: bolder;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        .controls {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="brand" href="#">Hi, I am Jeff Sims</a>
+            <!--<div class="nav-collapse collapse">
+                <ul class="nav">
+                    <li class="active"><a href="#">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->-->
+        </div>
+    </div>
+</div>
+<div class="container">
+    <h1>NFL Team Histogram</h1>
+    <p>Simple D3js histogram with team data through week 5.  This is a work in progress</p>
+    <div class="controls">
+        <span class="control-label">x axis</span><select id="x-control"></select>
+        <span class="control-label">y axis</span><select id="y-control"></select>
+    </div>
+    <div id="histogram"></div>
+</div>
+
+    <script>
+
+        d3.csv('nfl_team_data.csv', function(nfl_team_data){
+
+        nfl_team_data.forEach(function(d){
+            d.o_points_per_game = +d.o_points_per_game;
+            d.d_pts_per_game = +d.d_pts_per_game;
+            d.win = +d.win;
+            d.d_total_points = +d.d_total_points;
+            d.d_total_plays = +d.d_total_plays;
+            d.d_yards_per_game = +d.d_yards_per_game;
+            d.d_yards_per_play = +d.d_yards_per_play;
+            d.d_first_down_per_game = +d.d_first_down_per_game;
+            d.d_third_down_made = +d.d_third_down_made;
+            d.d_third_down_attempt = +d.d_third_down_attempt;
+            d.d_third_down_pct = +d.d_third_down_pct;
+            d.d_fourth_down_made = +d.d_fourth_down_made;
+            d.d_fourth_down_attempt = +d.d_fourth_down_attempt;
+            d.d_fourth_down_pct = +d.d_fourth_down_pct;
+            d.d_penalties = +d.d_penalties;
+            d.d_penalty_yards = +d.d_penalty_yards;
+            //d.d_time_on_field_min =
+            d.d_fumbles_forced = +d.d_fumbles_forced;
+            d.d_fumbles_lost = +d.d_fumbles_lost;
+            d.o_total_points = +d.o_total_points;
+            d.o_total_plays = +d.o_total_plays;
+            d.o_yards_per_game = +d.o_yards_per_game;
+            d.o_yards_per_play = +d.o_yards_per_play;
+            d.o_first_down_per_game = +d.o_first_down_per_game;
+            d.o_third_down_made = +d.o_third_down_made;
+            d.o_third_down_attempt = +d.o_third_down_attempt;
+            d.o_third_down_pct = +d.o_third_down_pct;
+            d.o_fourth_down_made = +d.o_fourth_down_made;
+            d.o_fourth_down_attempt = +d.o_fourth_down_attempt;
+            d.o_fourth_down_pct = +d.o_fourth_down_pct;
+            d.o_penalties = +d.o_penalties;
+            d.o_penalty_yards = +d.o_penalty_yards;
+            //d.o_time_on_field_min = +d.o_time_on_field_min;
+            d.o_fumbles = +d.o_fumbles;
+            d.o_fumbles_lost = +d.o_fumbles_lost;
+            d.loss = +d.loss;
+        });
+
+
+
+        var margin = {top: 50, bottom: 50, right: 50, left: 75};
+        var width = 800 - margin.left - margin.right;
+        var height = 600 - margin.top - margin.bottom;
+
+        var svg = d3.select("#histogram")
+                .append("svg")
+                .attr({
+                    width: width + margin.right + margin.left,
+                    height: height + margin.top + margin.bottom
+                })
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var xScale = d3.scale.linear()
+                .domain([0,d3.max(nfl_team_data,function(d){return d.o_points_per_game;})])
+                .range([0,width]);
+
+        var yScale = d3.scale.linear()
+                .domain([0,d3.max(nfl_team_data,function(d){return d.d_pts_per_game})])
+                .range([height,0]);
+
+        var xAxis = d3.svg.axis()
+                .scale(xScale)
+                .orient("bottom");
+
+        var yAxis = d3.svg.axis()
+                .scale(yScale)
+                .orient("left");
+
+        svg.append("g")
+                .attr("class","axis")
+                .attr("id","x-axis")
+                .attr("transform","translate(0," + height + ")")
+                .call(xAxis);
+
+        svg.append("g")
+                .attr("class", "axis")
+                .attr("id", "y-axis")
+                .call(yAxis);
+
+        var circle = svg.selectAll("circle")
+                .data(nfl_team_data)
+                .enter()
+                .append("circle")
+                .attr({
+                    cx: function(d){return xScale(d.o_points_per_game)},
+                    cy: function(d){return yScale(d.d_pts_per_game)},
+                    r: function(d){return (d.win + 5) * 2;},
+                    fill: function(d){return d.color_primary;},
+                    stroke: function(d){return d.color_secondary;},
+                    "stroke-width": "2px",
+                    opacity: 0.8
+                })
+
+        circle.append("svg:title")
+                .text(function(d){return d.team + ": " + d.win + "-" + d.loss;})
+
+            svg.append("text")
+                    .attr("x",width/2)
+                    .attr("y",height+(margin.bottom/1.25))
+                    .attr("id","x-axis-label")
+                    .style("text-anchor","middle")
+                    .text("Points Scored Per Game");
+
+            svg.append("text")
+                    .attr("transform","rotate(-90)")
+                    .attr("y", 0-(margin.left/1.7))
+                    .attr("x", 0-(height/2))
+                    .attr("id","y-axis-label")
+                    .style("text-anchor", "middle")
+                    .text("Points Given Up Per Game");
+
+        d3.csv("optionSet.csv",function(data){
+            d3.selectAll("select").selectAll("option")
+                    .data(data)
+                    .enter()
+                    .append("option")
+                    .attr("value",function(d){return d.value;})
+                    .text(function(d){return d.key;});
+
+            document.getElementById("x-control").selectedIndex = 0;
+            document.getElementById("y-control").selectedIndex = 1;
+        })
+
+        function updateX(){
+            var x = document.getElementById("x-control").value;
+
+            d3.select("#x-axis")
+                    .remove();
+            d3.select("#x-axis-label")
+                    .remove();
+
+            xScale = d3.scale.linear()
+                    .domain([0,d3.max(nfl_team_data,function(d){return d[x];})])
+                    .range([0,width]);
+
+            xAxis = d3.svg.axis()
+                    .scale(xScale)
+                    .orient("bottom");
+
+            svg.append("g")
+                    .attr("class","axis")
+                    .attr("id","x-axis")
+                    .attr("transform","translate(0," + height + ")")
+                    .call(xAxis);
+
+            circle.transition()
+                    .duration(1000)
+                    .attr("cx",function(d){return xScale(d[x]);});
+
+            svg.append("text")
+                    .attr("x",width/2)
+                    .attr("y",height+(margin.bottom/1.25))
+                    .attr("id","x-axis-label")
+                    .style("text-anchor","middle")
+                    .text(document.getElementById("x-control").options[this.selectedIndex].text);
+
+        }
+
+        function updateY(){
+            var y = document.getElementById("y-control").value;
+
+            d3.select("#y-axis")
+                    .remove();
+
+            d3.select("#y-axis-label")
+                    .remove();
+
+            yScale = d3.scale.linear()
+                    .domain([0,d3.max(nfl_team_data,function(d){return d[y]})])
+                    .range([height,0]);
+
+            yAxis = d3.svg.axis()
+                    .scale(yScale)
+                    .orient("left");
+
+            svg.append("g")
+                    .attr("class", "axis")
+                    .attr("id", "y-axis")
+                    .call(yAxis);
+
+            circle.transition()
+                    .duration(1000)
+                    .attr("cy",function(d){return yScale(d[y]);});
+
+            svg.append("text")
+                    .attr("transform","rotate(-90)")
+                    .attr("y", 0-(margin.left/1.7))
+                    .attr("x", 0-(height/2))
+                    .attr("id","y-axis-label")
+                    .style("text-anchor", "middle")
+                    .text(document.getElementById("y-control").options[this.selectedIndex].text);
+
+        }
+
+            d3.select("#x-control")
+                    .on("change",updateX);
+
+            d3.select("#y-control")
+                    .on("change",updateY);
+
+        });
+
+    </script>
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
